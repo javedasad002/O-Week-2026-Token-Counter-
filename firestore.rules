@@ -1,0 +1,23 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    function isStaffMember() {
+      return request.auth != null && 
+        exists(/databases/$(database)/documents/authorized_users/$(request.auth.uid));
+    }
+
+    match /counters/{deptId} {
+      allow read: if true;
+      allow create, update: if isStaffMember() && 
+        request.resource.data.value is number && 
+        request.resource.data.value >= 0;
+      allow delete: if false;
+    }
+    
+    match /authorized_users/{userId} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+  }
+}
