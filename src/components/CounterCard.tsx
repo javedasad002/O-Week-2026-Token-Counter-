@@ -54,7 +54,8 @@ export const CounterCard: React.FC<CounterCardProps> = ({
             <span className="text-xs font-extrabold uppercase tracking-widest text-brand-purple-dark bg-brand-purple/10 px-3 py-1 rounded-full">
               Dept
             </span>
-            <h2 className="text-2xl font-black text-slate-800 mt-2 tracking-tight">
+            {/* Department abbreviation made noticeably larger for visibility from distance */}
+            <h2 className="text-2xl sm:text-3xl font-black text-slate-800 mt-2 tracking-tight">
               {counter.name}
             </h2>
             <p className="text-xs font-medium text-slate-500 line-clamp-1" title={counter.fullName}>
@@ -62,7 +63,7 @@ export const CounterCard: React.FC<CounterCardProps> = ({
             </p>
           </div>
           {!isAuthorized && (
-            <span title="Login required to change values" className="text-slate-400 bg-slate-100 p-2 rounded-xl">
+            <span title="View Only (Authorized staff login required to modify)" className="text-slate-400 bg-slate-100 p-2 rounded-xl">
               <Lock size={16} />
             </span>
           )}
@@ -82,39 +83,47 @@ export const CounterCard: React.FC<CounterCardProps> = ({
         </div>
       </div>
 
-      <div className="space-y-3">
-        <button
-          onClick={() => handleAction('inc')}
-          disabled={loadingAction === 'inc'}
-          aria-label={`Increment ${counter.name} token by 1`}
-          className="w-full bg-gradient-to-r from-brand-purple to-brand-blue hover:from-brand-purple-dark hover:to-brand-blue-dark active:scale-[0.98] text-white font-extrabold text-lg py-4 px-6 rounded-2xl shadow-lg shadow-brand-purple/25 flex items-center justify-center gap-2 transition duration-150 focus:outline-none focus:ring-4 focus:ring-brand-purple/30 disabled:opacity-60"
-        >
-          <Plus size={24} strokeWidth={3} />
-          <span>+1 TOKEN</span>
-        </button>
-
-        <div className="grid grid-cols-2 gap-2.5">
+      {/* Control Buttons: Visible ONLY to authorized users */}
+      {isAuthorized ? (
+        <div className="space-y-3">
           <button
-            onClick={() => handleAction('dec')}
-            disabled={counter.value <= 0 || loadingAction === 'dec'}
-            aria-label={`Decrement ${counter.name} token by 1`}
-            className="w-full bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-700 font-bold text-sm py-3 px-3 rounded-xl flex items-center justify-center gap-1 transition duration-150 disabled:opacity-40 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-slate-300"
+            onClick={() => handleAction('inc')}
+            disabled={loadingAction === 'inc'}
+            aria-label={`Increment ${counter.name} token by 1`}
+            className="w-full bg-gradient-to-r from-brand-purple to-brand-blue hover:from-brand-purple-dark hover:to-brand-blue-dark active:scale-[0.98] text-white font-extrabold text-lg py-4 px-6 rounded-2xl shadow-lg shadow-brand-purple/25 flex items-center justify-center gap-2 transition duration-150 focus:outline-none focus:ring-4 focus:ring-brand-purple/30 disabled:opacity-60"
           >
-            <Minus size={16} strokeWidth={2.5} />
-            <span>−1 Token</span>
+            <Plus size={24} strokeWidth={3} />
+            <span>+1 TOKEN</span>
           </button>
 
-          <button
-            onClick={() => handleAction('reset')}
-            disabled={loadingAction === 'reset'}
-            aria-label={`Reset ${counter.name} token counter`}
-            className="w-full bg-rose-50 hover:bg-rose-100 active:bg-rose-200 text-rose-600 font-bold text-sm py-3 px-3 rounded-xl flex items-center justify-center gap-1 transition duration-150 focus:outline-none focus:ring-2 focus:ring-rose-200"
-          >
-            <RotateCcw size={15} />
-            <span>Reset</span>
-          </button>
+          <div className="grid grid-cols-2 gap-2.5">
+            <button
+              onClick={() => handleAction('dec')}
+              disabled={counter.value <= 0 || loadingAction === 'dec'}
+              aria-label={`Decrement ${counter.name} token by 1`}
+              className="w-full bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-700 font-bold text-sm py-3 px-3 rounded-xl flex items-center justify-center gap-1 transition duration-150 disabled:opacity-40 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-slate-300"
+            >
+              <Minus size={16} strokeWidth={2.5} />
+              <span>−1 Token</span>
+            </button>
+
+            <button
+              onClick={() => handleAction('reset')}
+              disabled={loadingAction === 'reset'}
+              aria-label={`Reset ${counter.name} token counter`}
+              className="w-full bg-rose-50 hover:bg-rose-100 active:bg-rose-200 text-rose-600 font-bold text-sm py-3 px-3 rounded-xl flex items-center justify-center gap-1 transition duration-150 focus:outline-none focus:ring-2 focus:ring-rose-200"
+            >
+              <RotateCcw size={15} />
+              <span>Reset</span>
+            </button>
+          </div>
         </div>
-      </div>
+      ) : (
+        /* Public read-only indicator */
+        <div className="text-center py-2.5 px-3 bg-slate-50 border border-slate-100 rounded-xl text-xs font-semibold text-slate-400">
+          Live Counter • View Only
+        </div>
+      )}
     </div>
   );
 };
