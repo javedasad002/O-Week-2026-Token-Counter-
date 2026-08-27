@@ -1,10 +1,17 @@
 import React from 'react';
-import { LogIn, LogOut, Wifi, WifiOff, ShieldCheck, User } from 'lucide-react';
-import { UserProfile } from '../types';
+import {
+  LogIn,
+  LogOut,
+  Wifi,
+  WifiOff,
+  ShieldCheck,
+  User,
+} from 'lucide-react';
+import { User as FirebaseUser } from 'firebase/auth';
 
 interface HeaderProps {
   isOnline: boolean;
-  currentUser: UserProfile | null;
+  currentUser: FirebaseUser | null;
   onOpenLogin: () => void;
   onLogout: () => void;
 }
@@ -24,6 +31,7 @@ export const Header: React.FC<HeaderProps> = ({
               <span className="bg-white/20 text-white font-bold text-xs uppercase px-2.5 py-1 rounded-full tracking-wider backdrop-blur-sm border border-white/20">
                 Official Orientation
               </span>
+
               <div
                 role="status"
                 className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-md transition-colors ${
@@ -46,9 +54,11 @@ export const Header: React.FC<HeaderProps> = ({
                 )}
               </div>
             </div>
+
             <h1 className="text-3xl sm:text-4xl font-black tracking-tight mt-2 text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-100 to-brand-pink-light">
               O'Week 2026 Token Counter
             </h1>
+
             <p className="text-brand-light-blue text-sm sm:text-base font-medium mt-0.5">
               Department Token Management & Live Audience System
             </p>
@@ -61,16 +71,24 @@ export const Header: React.FC<HeaderProps> = ({
                   <div className="w-8 h-8 rounded-full bg-brand-pink/30 flex items-center justify-center text-white border border-brand-pink/50">
                     <User size={16} />
                   </div>
+
                   <div className="text-left leading-tight pr-2">
                     <div className="flex items-center gap-1">
-                      <span className="text-xs text-white/70 font-medium">Authorized Staff</span>
-                      <ShieldCheck size={12} className="text-emerald-400" />
+                      <span className="text-xs text-white/70 font-medium">
+                        Authorized Staff
+                      </span>
+                      <ShieldCheck
+                        size={12}
+                        className="text-emerald-400"
+                      />
                     </div>
+
                     <span className="text-xs font-semibold text-white max-w-[150px] truncate block">
                       {currentUser.email}
                     </span>
                   </div>
                 </div>
+
                 <button
                   onClick={onLogout}
                   className="bg-white/15 hover:bg-rose-500/80 text-white font-medium text-xs py-2 px-3 rounded-xl transition duration-200 flex items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-rose-400 active:scale-95"
@@ -82,7 +100,10 @@ export const Header: React.FC<HeaderProps> = ({
               </div>
             ) : (
               <div className="flex items-center gap-2">
-                <span className="text-xs text-white/80 px-2 font-medium">Read-Only View</span>
+                <span className="text-xs text-white/80 px-2 font-medium">
+                  Read-Only View
+                </span>
+
                 <button
                   onClick={onOpenLogin}
                   className="bg-white hover:bg-brand-light-blue text-brand-purple-dark font-bold text-xs py-2 px-4 rounded-xl shadow-md transition duration-200 flex items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-white active:scale-95"
