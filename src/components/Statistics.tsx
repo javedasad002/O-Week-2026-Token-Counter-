@@ -1,65 +1,53 @@
 import React from 'react';
-import { ALL_DEPARTMENTS, DepartmentCounter } from '../types';
+import { Layers, Activity, Clock } from 'lucide-react';
+import { DepartmentCounter } from '../types';
 
 interface StatisticsProps {
   counters: Record<string, DepartmentCounter>;
-  activeCount: number;
+  lastUpdated: string;
 }
 
-export default function Statistics({ counters, activeCount }: StatisticsProps): React.ReactElement {
-  // Calculate total across all six defined departments in Firestore
-  const totalTokens = ALL_DEPARTMENTS.reduce((sum, dept) => {
-    return sum + (counters[dept.id]?.value || 0);
-  }, 0);
-
-  // Find the leading department
-  let highestDept = '-';
-  let highestVal = -1;
-
-  ALL_DEPARTMENTS.forEach((dept) => {
-    const val = counters[dept.id]?.value || 0;
-    if (val > highestVal) {
-      highestVal = val;
-      highestDept = dept.name;
-    }
-  });
+export const Statistics: React.FC<StatisticsProps> = ({ counters, lastUpdated }) => {
+  const totalTokens = Object.values(counters).reduce((acc, curr) => acc + (curr.value || 0), 0);
+  const activeDepartments = Object.keys(counters).length;
 
   return (
-    <div className="bg-white rounded-xl p-5 shadow-sm border border-[#B6CDD8]/40">
-      <h3 className="text-xs font-bold uppercase tracking-wider text-[#5C63A5] mb-4">
-        Live Orientation Statistics
-      </h3>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        {/* Total Tokens (All 6 departments) */}
-        <div className="bg-[#EEF1F2]/60 p-4 rounded-lg border border-[#B6CDD8]/30">
-          <span className="block text-xs font-medium text-[#5C63A5]">
-            Total Tokens Issued (All Departments)
-          </span>
-          <span className="text-2xl font-black text-[#0B3D5C]">
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 my-6">
+      <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 flex items-center justify-between">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-wider text-slate-500">Total Tokens Issued</p>
+          <p className="text-3xl sm:text-4xl font-black text-brand-purple mt-1 tracking-tight">
             {totalTokens.toLocaleString()}
-          </span>
+          </p>
         </div>
-
-        {/* Active Display Count */}
-        <div className="bg-[#EEF1F2]/60 p-4 rounded-lg border border-[#B6CDD8]/30">
-          <span className="block text-xs font-medium text-[#5C63A5]">
-            Active Counters
-          </span>
-          <span className="text-2xl font-black text-[#4A3A8C]">
-            {activeCount} / 6
-          </span>
+        <div className="w-12 h-12 rounded-2xl bg-brand-purple/10 flex items-center justify-center text-brand-purple">
+          <Layers size={24} />
         </div>
+      </div>
 
-        {/* Leading Department */}
-        <div className="bg-[#EEF1F2]/60 p-4 rounded-lg border border-[#B6CDD8]/30">
-          <span className="block text-xs font-medium text-[#5C63A5]">
-            Leading Department
-          </span>
-          <span className="text-2xl font-black text-[#471F73]">
-            {highestVal > 0 ? `${highestDept} (${highestVal})` : 'None yet'}
-          </span>
+      <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 flex items-center justify-between">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-wider text-slate-500">Active Counters</p>
+          <p className="text-3xl sm:text-4xl font-black text-brand-blue mt-1 tracking-tight">
+            {activeDepartments}
+          </p>
+        </div>
+        <div className="w-12 h-12 rounded-2xl bg-brand-blue/10 flex items-center justify-center text-brand-blue">
+          <Activity size={24} />
+        </div>
+      </div>
+
+      <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 flex items-center justify-between">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-wider text-slate-500">Last Database Sync</p>
+          <p className="text-lg sm:text-xl font-bold text-slate-700 mt-2 truncate max-w-[180px]">
+            {lastUpdated || 'Synchronized'}
+          </p>
+        </div>
+        <div className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-600">
+          <Clock size={24} />
         </div>
       </div>
     </div>
   );
-}
+};
